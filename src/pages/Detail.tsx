@@ -1,3 +1,4 @@
+import { gql, useQuery } from "@apollo/client";
 import {
   Container,
   Grid,
@@ -15,6 +16,10 @@ import {
 } from "@mantine/core";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { DetailCard } from "../components/DetailCard";
+import { ErrorResult } from "../components/ErrorResult";
+import { SkeletonDetail } from "../components/SkeletonDetail";
+import { ITEM_DETAIL } from "../graphQl/GetStore";
 
 const PRIMARY_COL_HEIGHT = 600;
 
@@ -28,9 +33,35 @@ export const Detail: React.FC = () => {
   const [value, setValue] = useState("");
   const valid = value.trim().length >= 6;
 
-  useEffect(() => {
-    console.log(params.id);
-  }, []);
+  const GET_DETAIL = gql`
+    ${ITEM_DETAIL}
+  `;
+
+  const { loading, error, data } = useQuery(GET_DETAIL, {
+    variables: { id: 1 },
+  });
+
+  const result = () => {
+    let getValue;
+
+    if (loading) return <SkeletonDetail />;
+    if (error) return <ErrorResult />;
+    if (!loading) getValue = data.Media;
+    return (
+      <DetailCard
+        id={getValue.id}
+        title={
+          getValue.title.english
+            ? getValue.title.english
+            : getValue.title.native
+        }
+        image={getValue.coverImage.large}
+        rating={getValue.averageScore / 20}
+      />
+    );
+  };
+
+  console.log(data);
 
   return (
     <>
@@ -69,7 +100,8 @@ export const Detail: React.FC = () => {
           breakpoints={[{ maxWidth: "sm", cols: 1 }]}
         >
           <div>
-            <Skeleton height={PRIMARY_COL_HEIGHT} radius="md" animate={false} />
+            {/* <Skeleton height={PRIMARY_COL_HEIGHT} radius="md" animate={false} /> */}
+            {result()}
             <Group position="center">
               <Button onClick={() => setOpened(true)}>Open Modal</Button>
             </Group>

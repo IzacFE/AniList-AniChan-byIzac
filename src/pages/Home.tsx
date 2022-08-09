@@ -1,15 +1,18 @@
-import React from "react";
 import {
-  Image,
   Text,
   Container,
-  ThemeIcon,
   Title,
   SimpleGrid,
   createStyles,
+  Pagination,
+  Center,
 } from "@mantine/core";
 import { AnimeCard } from "../components/AnimeCard";
-import { PagePagination } from "../components/Pagination";
+import { gql, useQuery } from "@apollo/client";
+import { LIST_ITEM } from "../graphQl/GetStore";
+import { SkeletonList } from "../components/SkeletonList";
+import { ErrorResult } from "../components/ErrorResult";
+import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -58,42 +61,81 @@ const useStyles = createStyles((theme) => ({
     display: "inline-block",
     color: theme.colorScheme === "dark" ? theme.white : "inherit",
   },
+
+  pagination: {
+    marginTop: 30,
+  },
 }));
 
-const mockdata = {
-  supTitle: "Ini main title",
-  description: "ini main description",
-  data: [
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-    { id: 1, title: "Ini Judul", image: "ini gambar", rating: 4.5 },
-  ],
-};
+interface ItemList {
+  media: {
+    id: number;
+    title: { english: string; native: string };
+    coverImage: { large: string };
+    averageScore: number;
+  };
+}
 
 export const Home = () => {
   const { classes } = useStyles();
+  const [activePage, setPage] = useState(1);
 
-  const cards = mockdata.data.map((item, index) => {
-    return (
-      <AnimeCard
-        id={index}
-        title={item.title}
-        image={item.image}
-        rating={item.rating}
-      />
-    );
+  const GET_LIST = gql`
+    ${LIST_ITEM}
+  `;
+
+  const { loading, error, data } = useQuery(GET_LIST, {
+    variables: { page: activePage, perPage: 10 },
   });
+
+  console.log(data);
+
+  const items = () => {
+    if (loading) return <SkeletonList />;
+    if (error) return <ErrorResult />;
+    return (
+      <>
+        <SimpleGrid
+          cols={5}
+          spacing="lg"
+          breakpoints={[
+            { maxWidth: 1000, cols: 4, spacing: "md" },
+            { maxWidth: 800, cols: 3, spacing: "sm" },
+            { maxWidth: 550, cols: 2, spacing: "xs" },
+          ]}
+          style={{ marginTop: 30 }}
+        >
+          {data.Page.mediaList.map((item: ItemList) => {
+            return (
+              <>
+                <AnimeCard
+                  id={item.media.id}
+                  title={
+                    item.media.title.english
+                      ? item.media.title.english
+                      : item.media.title.native
+                  }
+                  image={item.media.coverImage.large}
+                  rating={item.media.averageScore / 20}
+                />
+              </>
+            );
+          })}
+        </SimpleGrid>
+        <Center className={classes.pagination}>
+          <Pagination
+            page={activePage}
+            onChange={setPage}
+            total={data.Page.pageInfo.total}
+          />
+        </Center>
+      </>
+    );
+  };
 
   return (
     <Container size={1200} className={classes.wrapper}>
-      <Text className={classes.supTitle}>{mockdata.supTitle}</Text>
+      <Text className={classes.supTitle}>Ini Sup Title</Text>
 
       <Title className={classes.title} order={2}>
         PharmLand is <span className={classes.highlight}>not</span> just for
@@ -102,23 +144,11 @@ export const Home = () => {
 
       <Container size={1200} p={0}>
         <Text color="dimmed" className={classes.description}>
-          {mockdata.description}
+          Ini Description
         </Text>
       </Container>
 
-      <SimpleGrid
-        cols={5}
-        spacing="lg"
-        breakpoints={[
-          { maxWidth: 1000, cols: 4, spacing: "md" },
-          { maxWidth: 800, cols: 3, spacing: "sm" },
-          { maxWidth: 500, cols: 2, spacing: "xs" },
-        ]}
-        style={{ marginTop: 30 }}
-      >
-        {cards}
-      </SimpleGrid>
-      <PagePagination />
+      {items()}
     </Container>
   );
 };

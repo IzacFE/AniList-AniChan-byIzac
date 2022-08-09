@@ -74,7 +74,7 @@ interface CardData {
   rating: number;
 }
 
-export const AnimeCard = ({ id, image, title, rating }: CardData) => {
+export const DetailCard = ({ id, image, title, rating }: CardData) => {
   const { classes, theme } = useStyles();
 
   return (
