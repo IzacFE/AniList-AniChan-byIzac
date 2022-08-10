@@ -1,15 +1,15 @@
 import * as React from "react";
 import { useState } from "react";
 import { db } from "../../models/db";
-import { TodoList } from "../../models/AnimeCollection";
+import { AnimeCollection } from "../../models/AnimeCollection";
 
 interface Props {
-  todoList: TodoList;
+  animeCollection: AnimeCollection;
 }
 
-export function AddTodoItem({ todoList }: Props) {
+export function AddAnimeItem({ animeCollection }: Props) {
   const [item, setItem] = useState({
-    todoListId: todoList.id!,
+    animeCollectionId: animeCollection.id!,
     title: "",
   });
 
@@ -31,9 +31,9 @@ export function AddTodoItem({ todoList }: Props) {
           }
           onKeyUp={(ev) => {
             if (ev.key === "Enter") {
-              db.todoItems.add(item);
+              db.animeItems.add(item);
               setItem({
-                todoListId: todoList.id!,
+                animeCollectionId: animeCollection.id!,
                 title: "",
               });
             }

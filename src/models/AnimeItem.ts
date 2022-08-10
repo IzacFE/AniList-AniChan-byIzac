@@ -1,6 +1,7 @@
-export interface TodoItem {
+export interface AnimeItem {
   id?: number;
-  todoListId: number;
+  animeCollectionId: number;
   title: string;
+  //   animeId: number;
   done?: boolean;
 }

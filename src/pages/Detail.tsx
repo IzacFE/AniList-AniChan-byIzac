@@ -2,7 +2,8 @@ import { gql, useQuery } from "@apollo/client";
 import { Container, useMantineTheme, Modal, Button } from "@mantine/core";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { TodoLists } from "../components/database/AnimeCollections";
+import { AddAnimeCollection } from "../components/database/AddAnimeCollection";
+import { AnimeCollections } from "../components/database/AnimeCollections";
 import { DetailCard } from "../components/DetailCard";
 import { ErrorResult } from "../components/ErrorResult";
 import { LoadSpin } from "../components/LoadSpin";
@@ -16,7 +17,6 @@ export const Detail: React.FC = () => {
   const theme = useMantineTheme();
   const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
   //   for modal content
-  const [openTooltip, setOpenTooltip] = useState(false);
   const [value, setValue] = useState("");
   const valid = value.trim().length >= 6;
 
@@ -29,10 +29,16 @@ export const Detail: React.FC = () => {
   });
 
   let getValue;
+  let theTitle: string;
 
   if (loading) return <LoadSpin />;
   if (error) return <ErrorResult />;
-  if (!loading) getValue = data.Media;
+  if (!loading) {
+    getValue = data.Media;
+    theTitle = getValue.title.english
+      ? getValue.title.english
+      : getValue.title.native;
+  }
   return (
     <>
       <Modal
@@ -46,7 +52,8 @@ export const Detail: React.FC = () => {
         centered
         overlayBlur={1}
       >
-        <TodoLists />
+        <AnimeCollections />
+        <AddAnimeCollection />
       </Modal>
       <Container my="md">
         <DetailCard

@@ -1,17 +1,17 @@
 import * as React from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../../models/db";
-import { TodoListView } from "./AnimeCollectionView";
+import { AnimeCollectionView } from "./AnimeCollectionView";
 
-export function TodoLists() {
-  const lists = useLiveQuery(() => db.todoLists.toArray());
+export function AnimeCollections() {
+  const lists = useLiveQuery(() => db.animeCollections.toArray());
 
   if (!lists) return null;
 
   return (
     <div>
       {lists.map((list) => (
-        <TodoListView key={list.id} todoList={list} />
+        <AnimeCollectionView key={list.id} animeCollection={list} />
       ))}
     </div>
   );

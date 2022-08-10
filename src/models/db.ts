@@ -1,34 +1,39 @@
 import Dexie, { Table } from "dexie";
-import { populate } from "./populate";
-import { TodoItem } from "./AnimeItem";
-import { TodoList } from "./AnimeCollection";
+// import { populate } from "./populate";
+import { AnimeCollection } from "./AnimeCollection";
+import { AnimeItem } from "./AnimeItem";
 
-export class TodoDB extends Dexie {
-  todoLists!: Table<TodoList, number>;
-  todoItems!: Table<TodoItem, number>;
+export class AnimeDB extends Dexie {
+  animeCollections!: Table<AnimeCollection, number>;
+  animeItems!: Table<AnimeItem, number>;
   constructor() {
-    super("TodoDB");
+    super("AnimeDB");
     this.version(1).stores({
-      todoLists: "++id",
-      todoItems: "++id, todoListId",
+      animeCollections: "++id",
+      animeItems: "++id, animeCollectionId",
     });
   }
 
-  deleteList(todoListId: number) {
-    return this.transaction("rw", this.todoItems, this.todoLists, () => {
-      this.todoItems.where({ todoListId }).delete();
-      this.todoLists.delete(todoListId);
-    });
+  deleteList(animeCollectionId: number) {
+    return this.transaction(
+      "rw",
+      this.animeItems,
+      this.animeCollections,
+      () => {
+        this.animeItems.where({ animeCollectionId }).delete();
+        this.animeCollections.delete(animeCollectionId);
+      }
+    );
   }
 }
 
-export const db = new TodoDB();
+export const db = new AnimeDB();
 
-db.on("populate", populate);
+// db.on("populate", populate);
 
 export function resetDatabase() {
-  return db.transaction("rw", db.todoLists, db.todoItems, async () => {
+  return db.transaction("rw", db.animeCollections, db.animeItems, async () => {
     await Promise.all(db.tables.map((table) => table.clear()));
-    await populate();
+    // await populate();
   });
 }

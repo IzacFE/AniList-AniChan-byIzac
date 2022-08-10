@@ -1,19 +1,20 @@
 import * as React from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { TodoList } from "../../models/AnimeCollection";
+import { AnimeCollection } from "../../models/AnimeCollection";
 import { db } from "../../models/db";
-import { TodoItemView } from "./AnimeItemView";
-import { AddTodoItem } from "./AddAnime";
+import { AnimeItemView } from "./AnimeItemView";
+import { AddAnimeItem } from "./AddAnimeItem";
 import { IconTrash } from "@tabler/icons";
 
 interface Props {
-  todoList: TodoList;
+  animeCollection: AnimeCollection;
 }
 
-export function TodoListView({ todoList }: Props) {
+export function AnimeCollectionView({ animeCollection }: Props) {
   const items = useLiveQuery(
-    () => db.todoItems.where({ todoListId: todoList.id }).toArray(),
-    [todoList.id]
+    () =>
+      db.animeItems.where({ animeCollectionId: animeCollection.id }).toArray(),
+    [animeCollection.id]
   );
 
   if (!items) return null;
@@ -21,20 +22,23 @@ export function TodoListView({ todoList }: Props) {
   return (
     <div className="box">
       <div className="grid-row">
-        <h2>{todoList.title}</h2>
+        <h2>{animeCollection.title}</h2>
         <div className="todo-list-trash">
-          <a onClick={() => db.deleteList(todoList.id!)} title="Delete list">
+          <a
+            onClick={() => db.deleteList(animeCollection.id!)}
+            title="Delete list"
+          >
             <IconTrash />
           </a>
         </div>
       </div>
       <div>
         {items.map((item) => (
-          <TodoItemView key={item.id} item={item} />
+          <AnimeItemView key={item.id} item={item} />
         ))}
       </div>
       <div>
-        <AddTodoItem todoList={todoList} />
+        <AddAnimeItem animeCollection={animeCollection} />
       </div>
     </div>
   );

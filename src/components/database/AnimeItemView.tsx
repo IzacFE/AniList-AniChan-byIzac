@@ -1,13 +1,12 @@
-import * as React from "react";
 import { db } from "../../models/db";
-import { TodoItem } from "../../models/AnimeItem";
+import { AnimeItem } from "../../models/AnimeItem";
 import { IconTrash } from "@tabler/icons";
 
 interface Props {
-  item: TodoItem;
+  item: AnimeItem;
 }
 
-export function TodoItemView({ item }: Props) {
+export function AnimeItemView({ item }: Props) {
   return (
     <div className={"row " + (item.done ? "done" : "")}>
       <div className="narrow">
@@ -15,7 +14,7 @@ export function TodoItemView({ item }: Props) {
           type="checkbox"
           checked={!!item.done}
           onChange={(ev) =>
-            db.todoItems.update(item, {
+            db.animeItems.update(item, {
               done: ev.target.checked,
             })
           }
@@ -25,7 +24,7 @@ export function TodoItemView({ item }: Props) {
       <div className="todo-item-text">{item.title}</div>
       <div className="todo-item-trash">
         <a
-          onClick={() => db.todoItems.delete(item.id!)}
+          onClick={() => db.animeItems.delete(item.id!)}
           title="Delete item"
         ></a>
         <IconTrash />

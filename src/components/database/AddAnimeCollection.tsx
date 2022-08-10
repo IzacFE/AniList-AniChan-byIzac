@@ -1,22 +1,20 @@
-import * as React from "react";
 import { useState } from "react";
 import { db } from "../../models/db";
-import { TodoItem } from "../../models/AnimeItem";
-import { TodoList } from "../../models/AnimeCollection";
 import { useLiveQuery } from "dexie-react-hooks";
 import { IconCheck } from "@tabler/icons";
 
-export function AddTodoList() {
+export function AddAnimeCollection() {
   const [isActive, setIsActive] = useState(false);
   const [title, setTitle] = useState("");
   const hasAnyList = useLiveQuery(async () => {
-    const listCount = await db.todoLists.count();
+    const listCount = await db.animeCollections.count();
     return listCount > 0;
   });
 
   return !isActive ? (
     <button className="large-button" onClick={() => setIsActive(!isActive)}>
-      <IconCheck /> {hasAnyList ? `Add another list` : `Create ToDo List`}
+      <IconCheck />{" "}
+      {hasAnyList ? `Add another Collection` : `Create Anime Collection`}
     </button>
   ) : (
     <div className="box">
@@ -30,7 +28,7 @@ export function AddTodoList() {
           onChange={(ev) => setTitle(ev.target.value)}
           onKeyUp={(ev) => {
             if (ev.key === "Enter") {
-              db.todoLists.add({ title });
+              db.animeCollections.add({ title });
               setTitle("");
               setIsActive(false);
             }
