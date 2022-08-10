@@ -13,6 +13,8 @@ import { LIST_ITEM } from "../graphQl/GetStore";
 import { SkeletonList } from "../components/SkeletonList";
 import { ErrorResult } from "../components/ErrorResult";
 import { useState } from "react";
+import { IzacInfo } from "../components/IzacInfo";
+import profilePict from "../asset/izacImage.jpeg";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -41,8 +43,12 @@ const useStyles = createStyles((theme) => ({
 
   title: {
     lineHeight: 1,
-    textAlign: "center",
+    textAlign: "right",
     marginTop: theme.spacing.xl,
+    "@media (max-width: 800px)": {
+      textAlign: "center",
+      marginBottom: theme.spacing.md,
+    },
   },
 
   description: {
@@ -87,7 +93,6 @@ export const Home = () => {
   const { loading, error, data } = useQuery(GET_LIST, {
     variables: { page: activePage, perPage: 10 },
   });
-
   console.log(data);
 
   const items = () => {
@@ -135,19 +140,34 @@ export const Home = () => {
 
   return (
     <Container size={1200} className={classes.wrapper}>
-      <Text className={classes.supTitle}>Ini Sup Title</Text>
+      <Text className={classes.supTitle}>
+        Hello There, My name is Izac <br />
+        Welcome to my website, I hope you like it!!
+      </Text>
 
-      <Title className={classes.title} order={2}>
-        PharmLand is <span className={classes.highlight}>not</span> just for
-        pharmacists
-      </Title>
+      <SimpleGrid
+        cols={2}
+        spacing="lg"
+        breakpoints={[{ maxWidth: 550, cols: 1, spacing: "xs" }]}
+        style={{ marginTop: 30 }}
+      >
+        <Title className={classes.title} order={2}>
+          Either you win.. <br /> Or you learn!!
+        </Title>
+        <IzacInfo
+          avatar={profilePict}
+          name="Izac Aqsha Ghifari"
+          title="Front End Developer"
+          phone="IzacFE"
+          email="izacaqsha@gmail.com"
+        />
+      </SimpleGrid>
 
       <Container size={1200} p={0}>
         <Text color="dimmed" className={classes.description}>
           Ini Description
         </Text>
       </Container>
-
       {items()}
     </Container>
   );

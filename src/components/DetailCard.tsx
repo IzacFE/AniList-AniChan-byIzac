@@ -1,115 +1,149 @@
 import React from "react";
 import { IconStar } from "@tabler/icons";
-import { Card, Text, Group, Center, createStyles } from "@mantine/core";
+import { Paper, Text, Textarea, createStyles } from "@mantine/core";
 
-const useStyles = createStyles((theme, _params, getRef) => {
-  const image = getRef("image");
+const useStyles = createStyles((theme) => {
+  const BREAKPOINT = theme.fn.smallerThan("sm");
 
   return {
-    card: {
-      position: "relative",
-      height: 280,
+    wrapper: {
+      display: "flex",
       backgroundColor:
+        theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+      borderRadius: theme.radius.lg,
+      padding: 4,
+      border: `1px solid ${
         theme.colorScheme === "dark"
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
+          ? theme.colors.dark[8]
+          : theme.colors.gray[2]
+      }`,
 
-      [`&:hover .${image}`]: {
-        transform: "scale(1.03)",
+      [BREAKPOINT]: {
+        flexDirection: "column",
       },
     },
 
-    image: {
-      ref: image,
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      transition: "transform 500ms ease",
+    form: {
+      boxSizing: "border-box",
+      flex: 1,
+      padding: theme.spacing.xl,
+      paddingLeft: theme.spacing.xl * 2,
+      borderLeft: 0,
+
+      [BREAKPOINT]: {
+        padding: theme.spacing.md,
+        paddingLeft: theme.spacing.md,
+      },
     },
 
-    overlay: {
-      position: "absolute",
-      top: "20%",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundImage:
-        "linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .85) 90%)",
+    fields: {
+      marginTop: theme.spacing.md,
+      marginBottom: theme.spacing.md,
     },
 
-    content: {
-      height: "100%",
-      position: "relative",
+    fieldInput: {
+      flex: 1,
+
+      "& + &": {
+        marginLeft: theme.spacing.md,
+
+        [BREAKPOINT]: {
+          marginLeft: 0,
+          marginTop: theme.spacing.md,
+        },
+      },
+    },
+
+    fieldsGroup: {
       display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-end",
-      zIndex: 1,
+
+      [BREAKPOINT]: {
+        flexDirection: "column",
+      },
+    },
+
+    contacts: {
+      boxSizing: "border-box",
+      position: "relative",
+      borderRadius: theme.radius.lg - 2,
+
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      border: "1px solid transparent",
+      padding: theme.spacing.xl,
+      flex: "0 0 280px",
+
+      [BREAKPOINT]: {
+        marginBottom: theme.spacing.sm,
+        paddingLeft: theme.spacing.md,
+      },
     },
 
     title: {
-      color: theme.white,
-      marginBottom: 5,
+      marginBottom: theme.spacing.lg,
+      fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+
+      [BREAKPOINT]: {
+        marginBottom: theme.spacing.xl,
+      },
     },
 
-    bodyText: {
-      color: theme.colors.dark[2],
-      marginLeft: 7,
+    control: {
+      [BREAKPOINT]: {
+        flex: 1,
+      },
     },
 
-    author: {
-      color: theme.colors.dark[2],
+    ratingContainer: {
+      display: "flex",
+      gap: theme.spacing.xs,
+      marginBottom: theme.spacing.md,
     },
   };
 });
-
 interface CardData {
   id: number;
   title: string;
   image: string;
   rating: number;
+  description: string;
+  children: JSX.Element;
 }
 
-export const DetailCard = ({ id, image, title, rating }: CardData) => {
-  const { classes, theme } = useStyles();
+export const DetailCard = ({
+  id,
+  image,
+  title,
+  rating,
+  description,
+  children,
+}: CardData) => {
+  const { classes } = useStyles();
 
   return (
-    <Card
-      p="lg"
-      shadow="lg"
-      className={classes.card}
-      radius="md"
-      component="a"
-      href={`/detail/${id}`}
-    >
-      <div
-        className={classes.image}
-        style={{ backgroundImage: `url(${image})` }}
-      />
-      <div className={classes.overlay} />
+    <Paper shadow="md" radius="lg">
+      <div className={classes.wrapper}>
+        <div
+          className={classes.contacts}
+          style={{ backgroundImage: `url(${image})` }}
+        />
 
-      <div className={classes.content}>
-        <div>
-          <Text size="lg" className={classes.title} weight={500}>
+        <div className={classes.form}>
+          <Text size="lg" weight={700} className={classes.title}>
             {title}
           </Text>
+          <div className={classes.ratingContainer}>
+            <IconStar />
+            <p>{rating}</p>
+          </div>
 
-          <Group position="apart" spacing="xs">
-            <Group spacing="lg">
-              <Center>
-                <IconStar size={16} stroke={1.5} color={theme.colors.dark[2]} />
-                <Text size="sm" className={classes.bodyText}>
-                  {rating}
-                </Text>
-              </Center>
-            </Group>
-          </Group>
+          <div
+            className={classes.fields}
+            dangerouslySetInnerHTML={{ __html: description }}
+          ></div>
+          <div>{children}</div>
         </div>
       </div>
-    </Card>
+    </Paper>
   );
 };

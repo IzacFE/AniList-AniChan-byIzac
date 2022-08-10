@@ -35,6 +35,7 @@ query ($id: Int) {
       }
       bannerImage
       averageScore
+      description
   }
 }
 `;

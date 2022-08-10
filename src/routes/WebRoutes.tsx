@@ -24,8 +24,8 @@ export const WebRoutes: React.FC = () => {
                 path="/collection-detail/:name"
                 element={<CollectionDetail />}
               />
+              <Route path="/check" element={<Check />} />
             </Route>
-            <Route path="/check" element={<Check />} />
           </Routes>
         </BrowserRouter>
       </MantineProvider>
