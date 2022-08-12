@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  Avatar,
   Badge,
   Table,
   Group,
@@ -12,6 +11,9 @@ import {
   useMantineTheme,
   Image,
   Button,
+  Modal,
+  Title,
+  createStyles,
 } from "@mantine/core";
 import { IconPencil, IconTrash } from "@tabler/icons";
 
@@ -114,6 +116,22 @@ const data = [
   },
 ];
 
+const useStyles = createStyles((theme) => ({
+  titleContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 25,
+  },
+  title: {
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontSize: 25,
+    fontWeight: 900,
+    lineHeight: 1.1,
+    marginBottom: theme.spacing.md,
+    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+  },
+}));
+
 const jobColors: Record<string, string> = {
   engineer: "blue",
   manager: "cyan",
@@ -124,6 +142,9 @@ export const CollectionDetail = () => {
   const collectionName = useParams();
   const theme = useMantineTheme();
   console.log(collectionName);
+  const { classes } = useStyles();
+  const [opened, setOpened] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const rows = data.map((item) => (
     <tr key={item.name}>
@@ -175,10 +196,8 @@ export const CollectionDetail = () => {
               Detail
             </Button>
           </Link>
-          <ActionIcon>
-            <IconPencil size={25} stroke={1.5} />
-          </ActionIcon>
-          <ActionIcon color="red">
+
+          <ActionIcon color="red" onClick={() => setOpened(true)}>
             <IconTrash size={25} stroke={1.5} />
           </ActionIcon>
         </Group>
@@ -187,19 +206,49 @@ export const CollectionDetail = () => {
   ));
 
   return (
-    <ScrollArea>
-      <Table sx={{ minWidth: 800 }} verticalSpacing="sm">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Rating</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
-    </ScrollArea>
+    <section>
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Deleting list!"
+        centered
+        overlayBlur={1}
+      >
+        Delete list
+      </Modal>
+      <Modal
+        opened={edit}
+        onClose={() => setEdit(false)}
+        title="Edit Collection Title"
+        centered
+        overlayBlur={1}
+      >
+        Collection Title
+      </Modal>
+
+      <div className={classes.titleContainer}>
+        <Title className={classes.title} order={2}>
+          A fully featured React components library for your next project
+        </Title>
+        <ActionIcon color="blue" onClick={() => setEdit(true)}>
+          <IconPencil size={25} stroke={1.5} />
+        </ActionIcon>
+      </div>
+
+      <ScrollArea>
+        <Table sx={{ minWidth: 800 }} verticalSpacing="sm">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Rating</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
+      </ScrollArea>
+    </section>
   );
 };

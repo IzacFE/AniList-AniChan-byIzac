@@ -1,13 +1,15 @@
 import {
   createStyles,
   Table,
-  Progress,
   Anchor,
-  Text,
   Group,
   ScrollArea,
   Button,
+  ActionIcon,
+  Modal,
 } from "@mantine/core";
+import { IconTrash } from "@tabler/icons";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
@@ -185,6 +187,7 @@ const dummy = [
 // export const Collection = ({ data }: TableReviewsProps) =>
 export const Collection = () => {
   const { classes, theme } = useStyles();
+  const [opened, setOpened] = useState(false);
 
   const rows = dummy.map((data) => {
     return (
@@ -192,14 +195,6 @@ export const Collection = () => {
         <td>
           <Anchor<"a"> size="sm" onClick={(event) => event.preventDefault()}>
             <p>{data.name}</p>
-            <Link to={`/collection-detail/${data.name}`}>
-              <Button
-                variant="gradient"
-                gradient={{ from: "teal", to: "lime", deg: 105 }}
-              >
-                Detail
-              </Button>
-            </Link>
           </Anchor>
         </td>
         <td>Ini Description</td>
@@ -219,27 +214,54 @@ export const Collection = () => {
           })}
         </td>
         <td>{data.list.length}</td>
+        <td>
+          <Group spacing={0} position="right">
+            <Link to={`/collection-detail/${data.name}`}>
+              <Button
+                variant="gradient"
+                gradient={{ from: "teal", to: "lime", deg: 105 }}
+              >
+                Detail
+              </Button>
+            </Link>
+            <ActionIcon color="red" onClick={() => setOpened(true)}>
+              <IconTrash size={25} stroke={1.5} />
+            </ActionIcon>
+          </Group>
+        </td>
       </tr>
     );
   });
 
   return (
-    <ScrollArea>
-      <Table
-        sx={{ width: "100%", maxWidth: 1200 }}
-        verticalSpacing="xs"
-        horizontalSpacing="md"
+    <>
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title="Introduce yourself!"
+        centered
+        overlayBlur={1}
       >
-        <thead>
-          <tr>
-            <th>Collection Title</th>
-            <th>Description</th>
-            <th>Anime List</th>
-            <th>Total Anime</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
-    </ScrollArea>
+        Isi Modal
+      </Modal>
+      <ScrollArea>
+        <Table
+          sx={{ width: "100%", maxWidth: 1200 }}
+          verticalSpacing="xs"
+          horizontalSpacing="md"
+        >
+          <thead>
+            <tr>
+              <th>Collection Title</th>
+              <th>Description</th>
+              <th>Anime List</th>
+              <th>Total Anime</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
+      </ScrollArea>
+    </>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { IconEye, IconMessageCircle } from "@tabler/icons";
+import { IconStar } from "@tabler/icons";
 import { Card, Text, Group, Center, createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -27,6 +27,8 @@ const useStyles = createStyles((theme, _params, getRef) => {
       right: 0,
       bottom: 0,
       backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
       transition: "transform 500ms ease",
     },
 
@@ -74,7 +76,6 @@ interface CardData {
 
 export const AnimeCard = ({ id, image, title, rating }: CardData) => {
   const { classes, theme } = useStyles();
-  console.log(id);
 
   return (
     <Card
@@ -98,23 +99,9 @@ export const AnimeCard = ({ id, image, title, rating }: CardData) => {
           </Text>
 
           <Group position="apart" spacing="xs">
-            <Text size="sm" className={classes.author}>
-              {/* {author} */}Tambahan
-            </Text>
-
             <Group spacing="lg">
               <Center>
-                <IconEye size={16} stroke={1.5} color={theme.colors.dark[2]} />
-                <Text size="sm" className={classes.bodyText}>
-                  Tambahan
-                </Text>
-              </Center>
-              <Center>
-                <IconMessageCircle
-                  size={16}
-                  stroke={1.5}
-                  color={theme.colors.dark[2]}
-                />
+                <IconStar size={16} stroke={1.5} color={theme.colors.dark[2]} />
                 <Text size="sm" className={classes.bodyText}>
                   {rating}
                 </Text>
