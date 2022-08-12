@@ -24,12 +24,7 @@ export function AnimeCollectionView({ animeCollection }: Props) {
       <div className="grid-row">
         <h2>{animeCollection.title}</h2>
         <div className="todo-list-trash">
-          <a
-            onClick={() => db.deleteList(animeCollection.id!)}
-            title="Delete list"
-          >
-            <IconTrash />
-          </a>
+          <IconTrash onClick={() => db.deleteList(animeCollection.id!)} />
         </div>
       </div>
       <div>
@@ -37,9 +32,9 @@ export function AnimeCollectionView({ animeCollection }: Props) {
           <AnimeItemView key={item.id} item={item} />
         ))}
       </div>
-      <div>
+      {/* <div>
         <AddAnimeItem animeCollection={animeCollection} />
-      </div>
+      </div> */}
     </div>
   );
 }

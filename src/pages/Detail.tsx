@@ -1,24 +1,32 @@
 import { gql, useQuery } from "@apollo/client";
 import { Container, useMantineTheme, Modal, Button } from "@mantine/core";
+import { useLiveQuery } from "dexie-react-hooks";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AddAnimeCollection } from "../components/database/AddAnimeCollection";
+import { AddAnimeItem } from "../components/database/AddAnimeItem";
 import { AnimeCollections } from "../components/database/AnimeCollections";
+import { AnimeCollectionView } from "../components/database/AnimeCollectionView";
 import { DetailCard } from "../components/DetailCard";
 import { ErrorResult } from "../components/ErrorResult";
 import { LoadSpin } from "../components/LoadSpin";
 import { ITEM_DETAIL } from "../graphQl/GetStore";
+import { AnimeCollection } from "../models/AnimeCollection";
+import { db } from "../models/db";
 
 const PRIMARY_COL_HEIGHT = 600;
+
+interface Props {
+  animeCollection: AnimeCollection;
+}
 
 export const Detail: React.FC = () => {
   const [opened, setOpened] = useState(false);
   const { id } = useParams();
   const theme = useMantineTheme();
-  const SECONDARY_COL_HEIGHT = PRIMARY_COL_HEIGHT / 2 - theme.spacing.md / 2;
+  const lists = useLiveQuery(() => db.animeCollections.toArray());
   //   for modal content
   const [value, setValue] = useState("");
-  const valid = value.trim().length >= 6;
 
   const GET_DETAIL = gql`
     ${ITEM_DETAIL}
@@ -52,7 +60,18 @@ export const Detail: React.FC = () => {
         centered
         overlayBlur={1}
       >
-        <AnimeCollections />
+        {lists && (
+          <div>
+            {lists.map((list) => (
+              <>
+                <div>
+                  <h2>{list.title}</h2>
+                  <AddAnimeItem animeCollection={list} animeTitle={theTitle} />
+                </div>
+              </>
+            ))}
+          </div>
+        )}
         <AddAnimeCollection />
       </Modal>
       <Container my="md">

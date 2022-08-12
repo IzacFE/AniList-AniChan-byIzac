@@ -1,9 +1,7 @@
 import {
   createStyles,
   Table,
-  Progress,
   Anchor,
-  Text,
   Group,
   ScrollArea,
   Button,

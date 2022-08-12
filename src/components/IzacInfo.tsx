@@ -30,6 +30,7 @@ export function IzacInfo({
   email,
 }: UserInfoIconsProps) {
   const { classes } = useStyles();
+  
   return (
     <div>
       <Group noWrap>
